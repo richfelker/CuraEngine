@@ -2214,6 +2214,11 @@ void LayerPlan::writeGCode(GCodeExport& gcode)
                 {
                     // We need to unretract before the last travel move of the path if the next path is an outer wall.
                     gcode.writeUnretractionAndPrime();
+                    // Always use acceleration of the following extrusion so as not to introduce
+                    // ringing from high travel accel into outer wall. Normally, the unretract would
+                    // give the ringing time to settle, but here the unretract happens before the travel.
+                    if(acceleration_enabled && next_extrusion_idx < paths.size())
+                        gcode.writeTravelAcceleration(paths[next_extrusion_idx].config.getAcceleration());
                 }
                 if (! path.points.empty())
                 {
