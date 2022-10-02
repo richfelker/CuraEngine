@@ -243,7 +243,7 @@ target_link_libraries(_CuraEngine
         $<$<TARGET_EXISTS:sentry::sentry>:sentry::sentry>
         $<$<TARGET_EXISTS:GTest::gtest>:GTest::gtest>)
 else()
-target_link_libraries(_CuraEngine PRIVATE polyclipping)
+target_link_libraries(_CuraEngine PRIVATE polyclipping fmt spdlog)
 endif()
 
 target_compile_definitions(_CuraEngine PRIVATE
