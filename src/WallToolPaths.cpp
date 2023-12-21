@@ -83,7 +83,7 @@ const std::vector<VariableWidthLines>& WallToolPaths::generate()
         = settings_.get<bool>("fill_outline_gaps") ? settings_.get<coord_t>("min_feature_size") / 2 - 5 : settings_.get<coord_t>("min_wall_line_width") / 2 - 5;
     const coord_t epsilon_offset = (allowed_distance / 2) - 1;
     const auto transitioning_angle = settings_.get<AngleRadians>("wall_transition_angle");
-    constexpr coord_t discretization_step_size = MM2INT(0.8);
+    constexpr coord_t discretization_step_size = MM2INT(0.1);
 
     // Simplify outline for boost::voronoi consumption. Absolutely no self intersections or near-self intersections allowed:
     // TODO: Open question: Does this indeed fix all (or all-but-one-in-a-million) cases for manifold but otherwise possibly complex polygons?
