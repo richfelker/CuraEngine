@@ -863,6 +863,7 @@ void Slicer::buildSegments(const Mesh& mesh, const std::vector<std::pair<int32_t
                 Point3LL p1 = v1.p_;
                 Point3LL p2 = v2.p_;
 
+#if 0 // wrong
                 // Compensate for points exactly on the slice-boundary, except for 'inclusive', which already handles this correctly.
                 if (slicing_tolerance != SlicingTolerance::INCLUSIVE)
                 {
@@ -870,6 +871,7 @@ void Slicer::buildSegments(const Mesh& mesh, const std::vector<std::pair<int32_t
                     p1.z_ += static_cast<int>(p1.z_ == z) * -static_cast<int>(p1.z_ < 1);
                     p2.z_ += static_cast<int>(p2.z_ == z) * -static_cast<int>(p2.z_ < 1);
                 }
+#endif
 
                 SlicerSegment s;
                 s.endVertex = nullptr;
