@@ -2060,6 +2060,12 @@ bool FffGcodeWriter::processSingleLayerInfill(
     Polygons infill_not_below_skin;
     const bool hasSkinEdgeSupport = partitionInfillBySkinAbove(infill_below_skin, infill_not_below_skin, gcode_layer, mesh, part, infill_line_width);
 
+    double preshrink_expand = mesh.settings.get<coord_t>("infill_preshrink_expand");
+    if (preshrink_expand) {
+        infill_below_skin = infill_below_skin.offset(-preshrink_expand).offset(preshrink_expand);
+        infill_not_below_skin = infill_not_below_skin.offset(-preshrink_expand).offset(preshrink_expand);
+    }
+
     const auto pocket_size = mesh.settings.get<coord_t>("cross_infill_pocket_size");
     constexpr bool skip_stitching = false;
     constexpr bool connected_zigzags = false;
