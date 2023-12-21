@@ -29,6 +29,7 @@ void TimeEstimateCalculator::setFirmwareDefaults(const Settings& settings)
     max_xy_jerk = settings.get<Velocity>("machine_max_jerk_xy");
     max_z_jerk = settings.get<Velocity>("machine_max_jerk_z");
     max_e_jerk = settings.get<Velocity>("machine_max_jerk_e");
+    square_corner_velocity = settings.get<Velocity>("machine_square_corner_velocity");
     minimumfeedrate = settings.get<Velocity>("machine_minimum_feedrate");
     acceleration = settings.get<Acceleration>("machine_acceleration");
 }
@@ -220,6 +221,7 @@ void TimeEstimateCalculator::plan(Position newPos, Velocity feedrate, PrintFeatu
     }
 
     Velocity vmax_junction{ max_xy_jerk / 2.0 };
+#if 0
     Ratio vmax_junction_factor{ 1.0 };
     if (current_abs_feedrate[Z_AXIS] > max_z_jerk / 2.0)
     {
@@ -253,6 +255,28 @@ void TimeEstimateCalculator::plan(Position newPos, Velocity feedrate, PrintFeatu
         vmax_junction = std::min(previous_nominal_feedrate, Velocity{ vmax_junction * vmax_junction_factor }); // Limit speed to max previous speed
     }
 
+#else
+    vmax_junction = 0.0;
+    if (blocks.size() > 0) {
+        Block &prev_block = blocks[blocks.size()-1];
+        double dot = block.delta[X_AXIS]*prev_block.delta[X_AXIS]
+                   + block.delta[Y_AXIS]*prev_block.delta[Y_AXIS]
+                   + block.delta[Z_AXIS]*prev_block.delta[Z_AXIS];
+        double junction_cos_theta = -dot / block.distance / prev_block.distance;
+        if (junction_cos_theta > 0.999999) {
+            vmax_junction = feedrate;
+        } else {
+            if (junction_cos_theta < -0.999999)
+                junction_cos_theta = -0.999999;
+            double sin_theta_d2 = sqrt(0.5*(1.0-junction_cos_theta));
+            double v2_factor = (sqrt(2)-1) * sin_theta_d2 / (1.0 - sin_theta_d2);
+            vmax_junction = square_corner_velocity*sqrt(v2_factor);
+        }
+    }
+    vmax_junction = std::min(vmax_junction, block.nominal_feedrate);
+    vmax_junction = std::min(vmax_junction, previous_nominal_feedrate);
+    const Velocity safe_speed = vmax_junction;
+#endif
     block.max_entry_speed = vmax_junction;
 
     const Velocity v_allowable = maxAllowableSpeed(-block.acceleration, MINIMUM_PLANNER_SPEED, block.distance);

@@ -88,6 +88,7 @@ private:
     Velocity max_xy_jerk = 20.0;
     Velocity max_z_jerk = 0.4;
     Velocity max_e_jerk = 5.0;
+    Velocity square_corner_velocity = 5.0;
     Duration extra_time = 0.0;
 
     Position previous_feedrate;
