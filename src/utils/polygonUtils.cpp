@@ -1397,7 +1397,7 @@ double PolygonUtils::relativeHammingDistance(const Polygons& poly_a, const Polyg
     constexpr bool borders_allowed = true;
     if (total_area == 0.0)
     {
-        for (const ConstPolygonRef& polygon_a : poly_a)
+        for (const ConstPolygonRef polygon_a : poly_a)
         {
             for (Point2LL point : polygon_a)
             {
@@ -1407,7 +1407,7 @@ double PolygonUtils::relativeHammingDistance(const Polygons& poly_a, const Polyg
                 }
             }
         }
-        for (const ConstPolygonRef& polygon_b : poly_b)
+        for (const ConstPolygonRef polygon_b : poly_b)
         {
             for (Point2LL point : polygon_b)
             {
