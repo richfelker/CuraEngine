@@ -1833,7 +1833,7 @@ void FffGcodeWriter::addMeshPartToGCode(
 
     // After a layer part, make sure the nozzle is inside the comb boundary, so we do not retract on the perimeter.
     if (added_something
-        && (! mesh_group_settings.get<bool>("magic_spiralize") || gcode_layer.getLayerNr() < static_cast<LayerIndex>(mesh.settings.get<size_t>("initial_bottom_layers"))))
+        && (! mesh_group_settings.get<bool>("magic_spiralize") || gcode_layer.getLayerNr() < static_cast<LayerIndex>(mesh.settings.get<size_t>("initial_bottom_layers")) && (mesh.settings.get<size_t>("wall_line_count") > 1)))
     {
         coord_t innermost_wall_line_width = mesh.settings.get<coord_t>((mesh.settings.get<size_t>("wall_line_count") > 1) ? "wall_line_width_x" : "wall_line_width_0");
         if (gcode_layer.getLayerNr() == 0)

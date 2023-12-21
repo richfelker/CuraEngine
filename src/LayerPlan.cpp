@@ -482,7 +482,8 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
             // This should be true when traveling towards an outer wall to make sure that the unretraction will happen before the
             // last travel move BEFORE going to that wall. This way, the nozzle doesn't sit still on top of the outer wall's
             // path while it is unretracting, avoiding possible blips.
-            path->unretract_before_last_travel_move = path->retract && unretract_before_last_travel_move;
+            path->unretract_before_last_travel_move = path->retract && unretract_before_last_travel_move
+                && (extruder->settings_.get<size_t>("wall_line_count") > 1);
         }
     }
 
@@ -498,6 +499,7 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
     // no combing? retract only when path is not shorter than minimum travel distance
     if (! combed && ! is_first_travel_of_layer && last_planned_position_ && ! shorterThen(*last_planned_position_ - p, retraction_config.retraction_min_travel_distance))
     {
+        if (extruder->settings_.get<size_t>("wall_line_count") > 1)
         if (was_inside_) // when the previous location was from printing something which is considered inside (not support or prime tower etc)
         { // then move inside the printed part, so that we don't ooze on the outer wall while retraction, but on the inside of the print.
             assert(extruder != nullptr);
