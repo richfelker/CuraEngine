@@ -2311,7 +2311,16 @@ void LayerPlan::writeGCode(GCodeExport& gcode)
             if (extruder_plan_idx == extruder_plans_.size() - 1 || ! extruder.settings_.get<bool>("machine_extruder_end_pos_abs"))
             { // only do the z-hop if it's the last extruder plan; otherwise it's already at the switching bay area
                 // or do it anyway when we switch extruder in-place
+                const Point current_pos = gcode.getPositionXY();
+                const Point machine_middle = storage.machine_size.flatten().getMiddle();
+                const Point toward_middle_of_bed_short = current_pos - normal(current_pos - machine_middle, MM2INT(2.0));
+                gcode.writeTravel(toward_middle_of_bed_short, configs_storage.travel_config_per_extruder[extruder_nr].getSpeed());
+
                 gcode.writeZhopStart(MM2INT(3.0));
+                gcode.writeTravel(gcode.getPositionXY(), configs_storage.travel_config_per_extruder[extruder_nr].getSpeed());
+
+                const Point toward_middle_of_bed = current_pos - normal(current_pos - machine_middle, MM2INT(20.0));
+                gcode.writeTravel(toward_middle_of_bed, configs_storage.travel_config_per_extruder[extruder_nr].getSpeed());
             }
             gcode.writeDelay(extruder_plan.extra_time_);
         }
