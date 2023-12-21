@@ -2322,7 +2322,8 @@ void LayerPlan::writeGCode(GCodeExport& gcode)
                 const Point toward_middle_of_bed = current_pos - normal(current_pos - machine_middle, MM2INT(20.0));
                 gcode.writeTravel(toward_middle_of_bed, configs_storage.travel_config_per_extruder[extruder_nr].getSpeed());
             }
-            gcode.writeDelay(extruder_plan.extra_time_);
+            if (extruder_plan.extraTime > 2.5)
+            gcode.writeDelay(extruder_plan.extra_time_ - 2.5);
         }
 
         extruder_plan.handleAllRemainingInserts(gcode);
