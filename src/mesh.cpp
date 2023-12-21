@@ -124,7 +124,7 @@ int Mesh::findIndexOfVertex(const Point3LL& v)
 
     for (unsigned int idx = 0; idx < vertex_hash_map_[hash].size(); idx++)
     {
-        if ((vertices_[vertex_hash_map_[hash][idx]].p_ - v).testLength(vertex_meld_distance))
+        if (vertices_[vertex_hash_map_[hash][idx]].p_ == v)
         {
             return vertex_hash_map_[hash][idx];
         }
