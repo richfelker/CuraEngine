@@ -900,7 +900,7 @@ void TreeSupportTipGenerator::generateTips(
                     generate_layer_idx,
                     line_distance,
                     cross_fill_provider_,
-                    roof && ! use_fake_roof_,
+                    roof /*&& ! use_fake_roof_*/,
                     line_distance == upper_line_distance);
             };
 
