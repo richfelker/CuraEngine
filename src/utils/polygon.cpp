@@ -3,7 +3,9 @@
 
 #include "utils/polygon.h"
 
+#if 0
 #include <mapbox/geometry/wagyu/wagyu.hpp>
+#endif
 #include <unordered_set>
 
 #include <boost/geometry/geometries/point_xy.hpp>
@@ -1555,6 +1557,7 @@ Polygons Polygons::tubeShape(const coord_t inner_offset, const coord_t outer_off
     return this->offset(outer_offset).difference(this->offset(-inner_offset));
 }
 
+#if 0
 Polygons Polygons::removeNearSelfIntersections() const
 {
     using map_pt = mapbox::geometry::point<coord_t>;
@@ -1606,6 +1609,7 @@ Polygons Polygons::removeNearSelfIntersections() const
 
     return polys;
 }
+#endif
 
 size_t PartsView::getPartContaining(size_t poly_idx, size_t* boundary_poly_idx) const
 {

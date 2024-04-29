@@ -116,7 +116,9 @@ const std::vector<VariableWidthLines>& WallToolPaths::generate()
         return toolpaths_;
     }
 
+#if 0
     prepared_outline = prepared_outline.removeNearSelfIntersections();
+#endif
 
     const coord_t wall_transition_length = settings_.get<coord_t>("wall_transition_length");
 
