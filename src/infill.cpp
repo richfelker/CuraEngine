@@ -171,8 +171,6 @@ void Infill::generate(
     }
     scripta::log("infill_inner_contour_2", inner_contour_, section_type, layer_idx);
 
-    inner_contour = Simplify(max_resolution, max_deviation, 0).polygon(inner_contour);
-
     if (infill_multiplier_ > 1)
     {
         bool zig_zaggify_real = zig_zaggify_;

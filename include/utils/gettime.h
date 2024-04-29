@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#define SPDLOG_FMT_EXTERNAL
 #include <spdlog/stopwatch.h>
 
 namespace cura
