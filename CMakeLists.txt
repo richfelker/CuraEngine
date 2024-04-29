@@ -192,6 +192,12 @@ if (${EXTENSIVE_WARNINGS})
     set_project_warnings(_CuraEngine)
 endif ()
 
+if(ENABLE_BARBARIC_BS)
+if(ENABLE_OPENMP)
+    find_package(OpenMP REQUIRED)
+    target_link_libraries(_CuraEngine PUBLIC OpenMP::OpenMP_CXX)
+endif ()
+
 if (ENABLE_ARCUS)
     target_link_libraries(_CuraEngine PUBLIC arcus::arcus)
 endif ()
@@ -232,6 +238,9 @@ target_link_libraries(_CuraEngine
         $<$<TARGET_EXISTS:protobuf::libprotobuf>:protobuf::libprotobuf>
         $<$<TARGET_EXISTS:sentry::sentry>:sentry::sentry>
         $<$<TARGET_EXISTS:GTest::gtest>:GTest::gtest>)
+else()
+target_link_libraries(_CuraEngine PRIVATE polyclipping)
+endif()
 
 target_compile_definitions(_CuraEngine PRIVATE
         $<$<BOOL:${ENABLE_SENTRY}>:SENTRY_URL=\"${SENTRY_URL}\">
