@@ -112,6 +112,8 @@ void LayerPlanBuffer::addConnectingTravelMove(LayerPlan* prev_layer, const Layer
             // we force the path to use retraction
             path.retract = true;
         }
+        if (path.retract && (extruder_settings.get<bool>("retraction_hop_enabled") || mesh_group_settings.get<bool>("retraction_hop_enabled")))
+            path.perform_z_hop = true;
     }
 
     // If not using travel-specific jerk and acceleration, the layer plan needs to know the jerk/acc of the first extrusion move of the next layer.
