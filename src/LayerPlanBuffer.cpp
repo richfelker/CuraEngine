@@ -105,6 +105,8 @@ void LayerPlanBuffer::addConnectingTravelMove(LayerPlan* prev_layer, const Layer
                                         || mesh_group_settings.get<size_t>("wall_line_count") == 1)); // Moving towards an outer wall.
         prev_layer->final_travel_z_ = newest_layer->z_;
         GCodePath& path = prev_layer->addTravel(first_location_new_layer, force_retract);
+        // this must be cleared because it was calculated based on the wrong layer's combing boundaries
+        path.unretract_before_last_travel_move = false;
         if (force_retract && ! path.retract)
         {
             // addTravel() won't use retraction if the travel distance is less than retraction minimum travel setting
