@@ -399,7 +399,24 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
             path->retract = true;
             path->perform_z_hop = true;
         }
-        forceNewPathStart(); // force a new travel path after this first bogus move
+        if (is_inside_) {
+            // Find a suitable point inside the comb boundary for the connecting travel move to
+            // go to, and comb to the final destination here. This is necessary because the
+            // connecting travel move takes place in the previous layer and uses the previous
+            // layer's combing boundary, which might be outside the new layer's.
+            last_planned_position_ = p;
+            coord_t innermost_wall_line_width
+                = mesh_or_extruder_settings.get<coord_t>((mesh_or_extruder_settings.get<size_t>("wall_line_count") > 1) ? "wall_line_width_x" : "wall_line_width_0");
+            if (layer_nr_ == 0)
+            {
+                innermost_wall_line_width *= mesh_or_extruder_settings.get<Ratio>("initial_layer_line_width_factor");
+            }
+            moveInsideCombBoundary(innermost_wall_line_width, std::nullopt, path);
+            first_travel_destination_ = last_planned_position_;
+            path->unretract_before_last_travel_move = true;
+        } else {
+            forceNewPathStart(); // force a new travel path after this first bogus move
+        }
     }
     else if (force_retract && last_planned_position_ && ! shorterThen(*last_planned_position_ - p, retraction_config.retraction_min_travel_distance))
     {
