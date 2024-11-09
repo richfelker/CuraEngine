@@ -257,20 +257,22 @@ void TimeEstimateCalculator::plan(Position newPos, Velocity feedrate, PrintFeatu
 
 #else
     vmax_junction = 0.0;
-    if (blocks.size() > 0) {
-        Block &prev_block = blocks[blocks.size()-1];
-        double dot = block.delta[X_AXIS]*prev_block.delta[X_AXIS]
-                   + block.delta[Y_AXIS]*prev_block.delta[Y_AXIS]
-                   + block.delta[Z_AXIS]*prev_block.delta[Z_AXIS];
+    if (blocks.size() > 0)
+    {
+        Block& prev_block = blocks[blocks.size() - 1];
+        double dot = block.delta[X_AXIS] * prev_block.delta[X_AXIS] + block.delta[Y_AXIS] * prev_block.delta[Y_AXIS] + block.delta[Z_AXIS] * prev_block.delta[Z_AXIS];
         double junction_cos_theta = -dot / block.distance / prev_block.distance;
-        if (junction_cos_theta > 0.999999) {
+        if (junction_cos_theta > 0.999999)
+        {
             vmax_junction = feedrate;
-        } else {
+        }
+        else
+        {
             if (junction_cos_theta < -0.999999)
                 junction_cos_theta = -0.999999;
-            double sin_theta_d2 = sqrt(0.5*(1.0-junction_cos_theta));
-            double v2_factor = (sqrt(2)-1) * sin_theta_d2 / (1.0 - sin_theta_d2);
-            vmax_junction = square_corner_velocity*sqrt(v2_factor);
+            double sin_theta_d2 = sqrt(0.5 * (1.0 - junction_cos_theta));
+            double v2_factor = (sqrt(2) - 1) * sin_theta_d2 / (1.0 - sin_theta_d2);
+            vmax_junction = square_corner_velocity * sqrt(v2_factor);
         }
     }
     vmax_junction = std::min(vmax_junction, block.nominal_feedrate);

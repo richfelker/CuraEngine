@@ -399,7 +399,8 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
             path->retract = true;
             path->perform_z_hop = true;
         }
-        if (is_inside_) {
+        if (is_inside_)
+        {
             // Find a suitable point inside the comb boundary for the connecting travel move to
             // go to, and comb to the final destination here. This is necessary because the
             // connecting travel move takes place in the previous layer and uses the previous
@@ -414,7 +415,9 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
             moveInsideCombBoundary(innermost_wall_line_width, std::nullopt, path);
             first_travel_destination_ = last_planned_position_;
             path->unretract_before_last_travel_move = true;
-        } else {
+        }
+        else
+        {
             forceNewPathStart(); // force a new travel path after this first bogus move
         }
     }
@@ -499,8 +502,7 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
             // This should be true when traveling towards an outer wall to make sure that the unretraction will happen before the
             // last travel move BEFORE going to that wall. This way, the nozzle doesn't sit still on top of the outer wall's
             // path while it is unretracting, avoiding possible blips.
-            path->unretract_before_last_travel_move = path->retract && unretract_before_last_travel_move
-                && (extruder->settings_.get<size_t>("wall_line_count") > 1);
+            path->unretract_before_last_travel_move = path->retract && unretract_before_last_travel_move && (extruder->settings_.get<size_t>("wall_line_count") > 1);
         }
     }
 
@@ -517,17 +519,17 @@ GCodePath& LayerPlan::addTravel(const Point2LL& p, const bool force_retract, con
     if (! combed && ! is_first_travel_of_layer && last_planned_position_ && ! shorterThen(*last_planned_position_ - p, retraction_config.retraction_min_travel_distance))
     {
         if (extruder->settings_.get<size_t>("wall_line_count") > 1)
-        if (was_inside_) // when the previous location was from printing something which is considered inside (not support or prime tower etc)
-        { // then move inside the printed part, so that we don't ooze on the outer wall while retraction, but on the inside of the print.
-            assert(extruder != nullptr);
-            coord_t innermost_wall_line_width
-                = mesh_or_extruder_settings.get<coord_t>((mesh_or_extruder_settings.get<size_t>("wall_line_count") > 1) ? "wall_line_width_x" : "wall_line_width_0");
-            if (layer_nr_ == 0)
-            {
-                innermost_wall_line_width *= mesh_or_extruder_settings.get<Ratio>("initial_layer_line_width_factor");
+            if (was_inside_) // when the previous location was from printing something which is considered inside (not support or prime tower etc)
+            { // then move inside the printed part, so that we don't ooze on the outer wall while retraction, but on the inside of the print.
+                assert(extruder != nullptr);
+                coord_t innermost_wall_line_width
+                    = mesh_or_extruder_settings.get<coord_t>((mesh_or_extruder_settings.get<size_t>("wall_line_count") > 1) ? "wall_line_width_x" : "wall_line_width_0");
+                if (layer_nr_ == 0)
+                {
+                    innermost_wall_line_width *= mesh_or_extruder_settings.get<Ratio>("initial_layer_line_width_factor");
+                }
+                moveInsideCombBoundary(innermost_wall_line_width, std::nullopt, path);
             }
-            moveInsideCombBoundary(innermost_wall_line_width, std::nullopt, path);
-        }
         path->retract = retraction_enable;
         path->perform_z_hop = retraction_enable && mesh_or_extruder_settings.get<bool>("retraction_hop_enabled");
     }
@@ -2234,7 +2236,7 @@ void LayerPlan::writeGCode(GCodeExport& gcode)
                     // Always use acceleration of the following extrusion so as not to introduce
                     // ringing from high travel accel into outer wall. Normally, the unretract would
                     // give the ringing time to settle, but here the unretract happens before the travel.
-                    if(acceleration_enabled && next_extrusion_idx < paths.size())
+                    if (acceleration_enabled && next_extrusion_idx < paths.size())
                         gcode.writeTravelAcceleration(paths[next_extrusion_idx].config.getAcceleration());
                 }
                 if (! path.points.empty())
@@ -2348,7 +2350,7 @@ void LayerPlan::writeGCode(GCodeExport& gcode)
             }
             double time_spent = extruder.settings_.get<double>("cool_lift_head_time_spent");
             if (extruder_plan.extra_time_ > time_spent)
-            gcode.writeDelay(extruder_plan.extra_time_ - time_spent);
+                gcode.writeDelay(extruder_plan.extra_time_ - time_spent);
         }
 
         extruder_plan.handleAllRemainingInserts(gcode);

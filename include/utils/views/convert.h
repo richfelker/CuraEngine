@@ -34,7 +34,11 @@ namespace cura::views
 template<typename V>
 constexpr auto convert(auto&& proj)
 {
-    return ranges::make_view_closure(ranges::views::transform([proj](auto item) { return V { std::invoke(proj, item) }; }));
+    return ranges::make_view_closure(ranges::views::transform(
+        [proj](auto item)
+        {
+            return V{ std::invoke(proj, item) };
+        }));
 }
 } // namespace cura::views
 

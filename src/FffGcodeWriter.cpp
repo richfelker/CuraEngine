@@ -1833,7 +1833,8 @@ void FffGcodeWriter::addMeshPartToGCode(
 
     // After a layer part, make sure the nozzle is inside the comb boundary, so we do not retract on the perimeter.
     if (added_something
-        && (! mesh_group_settings.get<bool>("magic_spiralize") || gcode_layer.getLayerNr() < static_cast<LayerIndex>(mesh.settings.get<size_t>("initial_bottom_layers")) && (mesh.settings.get<size_t>("wall_line_count") > 1)))
+        && (! mesh_group_settings.get<bool>("magic_spiralize")
+            || gcode_layer.getLayerNr() < static_cast<LayerIndex>(mesh.settings.get<size_t>("initial_bottom_layers")) && (mesh.settings.get<size_t>("wall_line_count") > 1)))
     {
         coord_t innermost_wall_line_width = mesh.settings.get<coord_t>((mesh.settings.get<size_t>("wall_line_count") > 1) ? "wall_line_width_x" : "wall_line_width_0");
         if (gcode_layer.getLayerNr() == 0)
@@ -2061,7 +2062,8 @@ bool FffGcodeWriter::processSingleLayerInfill(
     const bool hasSkinEdgeSupport = partitionInfillBySkinAbove(infill_below_skin, infill_not_below_skin, gcode_layer, mesh, part, infill_line_width);
 
     double preshrink_expand = mesh.settings.get<coord_t>("infill_preshrink_expand");
-    if (preshrink_expand) {
+    if (preshrink_expand)
+    {
         infill_below_skin = infill_below_skin.offset(-preshrink_expand).offset(preshrink_expand);
         infill_not_below_skin = infill_not_below_skin.offset(-preshrink_expand).offset(preshrink_expand);
     }
